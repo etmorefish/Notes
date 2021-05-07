@@ -672,9 +672,23 @@ public class EmployeeTest2 {
 > 用于生成 sql 的 where 条件, entity 属性也用于生成 sql 的 where 条件
 > 注意: entity 生成的 where 条件与 使用各个 api 生成的 where 条件**没有任何关联行为**
 
+![image-20210507104219448](assets/MyBatisPlus.assets/image-20210507104219448.png)
 
+- Wrapper :条件构造抽象类,最顶端父类,抽象类中提供3个方法以及其他方法.
 
-# 分页插件
+- AbstractWrapper : 用于查询条件封装,生成 sql 的 where 条件,QueryWrapper(LambdaQueryWrapper) 和
+  UpdateWrapper(LambdaUpdateWrapper) 的父类用于生成 sql 的 where 条件, entity 属性也用于生成 sql 的 where
+  条件
+- AbstractWrapper比较重要,里面的方法需要重点学习.
+  该抽象类提供的重要方法如下:![image-20210507104523222](assets/MyBatisPlus.assets/image-20210507104523222.png)
+- AbstractLambdaWrapper : Lambda 语法使用 Wrapper统一处理解析 lambda 获取 column。
+- LambdaQueryWrapper :看名称也能明白就是用于Lambda语法使用的查询Wrapper
+- LambdaUpdateWrapper : Lambda 更新封装Wrapper
+- QueryWrapper : Entity 对象封装操作类,不是用lambda语法,自身的内部属性 entity 也用于生成 where 条件
+
+# 扩展
+
+## 分页插件
 
 ```java
 @Configuration
@@ -734,6 +748,331 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
 void xmlpage(){
     IPage<Employee> iPage = new Page<>(1, 10);
     System.out.println(mapper.getByGender(iPage, 1).getRecords());
+}
+```
+
+## 全局ID生成策略
+
+在全局配置文件中: 就不需要再每个Pojo主键上配置了
+
+```xml
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+```
+
+## 逻辑删除
+- 物理删除: 在删除的时候直接将数据从数据库干掉DELTE
+- 逻辑删除: 从逻辑层面控制删除,通常会在表里添加一个逻辑删除的字段比如 enabled 、is_delete,数据默认是有效的(值为1),
+  当用户删除时将数据修改UPDATE 0, 在查询的时候就只查where enabled=1.
+
+1. 需要添加逻辑删除的字段
+2. 局部单表逻辑删除,需要在对应的pojo类加入对应的逻辑删除标识字段
+
+```java
+    // 1代表有效数据  0代表删除的数据
+    @TableLogic(value = "1",delval = "0")
+    private Integer enabled;
+```
+
+全局逻辑删除配置, 如果进行了全局逻辑删除配置并且指定了,就可以不用在每个pojo类中配置了@TableLogic
+
+```xml
+mybatis‐plus:
+  global‐config:
+    db‐config:
+      logic‐delete‐field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+		logic‐delete‐value: 1 # 逻辑已删除值(默认为 1)
+		logic‐not‐delete‐value: 0 # 逻辑未删除值(默认为 0)
+```
+
+当执行删除, 将会把逻辑删除字段进行修改
+
+## 数据安全保护
+防止删库跑路
+
+```java
+    @Test
+    void test(){
+        // 1 生成 16 位随机 AES 密钥
+//        String randomKey = AES.generateRandomKey();
+//        System.out.println(randomKey);
+
+       String randomKey =  "5a3fa229f6ca46c6";
+
+// 随机密钥加密
+//       2 根据秘钥加密 数据库连接信息
+        String url =  "jdbc:mysql://0.0.0.0:3306/test";
+        String username =  "root";
+        String password = "123456";
+        String encrypt = AES.encrypt(url, randomKey);
+        String encrypt1 = AES.encrypt(username, randomKey);
+        String encrypt2 = AES.encrypt(password, randomKey);
+
+        System.out.println(encrypt);
+        System.out.println(encrypt1);
+        System.out.println(encrypt2);
+//        drUrYiMDYdOp5e2sIDmIg7yjDt+u0O/vGkA7ri6pNY0=
+//        A8/w4XVIJou2uNw3x1LXwg==
+//        UxYizXwIfgpwgg6iFLYRkA==
+    }
+```
+
+修改配置文件 注意要mpw:开头
+
+```xml
+    url: mpw:drUrYiMDYdOp5e2sIDmIg7yjDt+u0O/vGkA7ri6pNY0=
+    username: mpw:A8/w4XVIJou2uNw3x1LXwg==
+    password: mpw:UxYizXwIfgpwgg6iFLYRkA==
+```
+
+在部署的时候需要解密
+
+```shell
+// Jar 启动参数（ idea 设置 Program arguments , 服务器可以设置为启动环境变量 ）
+--mpw.key=d1104d7c3b616f0b
+
+java ‐jar xxxx.jar ‐‐mpw.key=你的16位随机秘钥, 越少人知道越好
+```
+
+## 乐观锁插件使用
+
+### 第一:什么是乐观锁
+
+- 悲观锁:悲观锁,正如其名,具有强烈的独占和排他特性。它指的是对数据被外界(包括本系统当前的其他事
+  务,以及来自外部系统的事务处理)修改持保守态度。因此,在整个数据处理过程中,将数据处于锁定状态。
+  假设功能并发量非常大,就需要使用 synchronized 来处理高并发下产生线程不安全问题, 会使其他线程进行挂起等待从
+  而影响系统吞吐量
+
+- 乐观锁: 乐观锁是相对悲观锁而言的,乐观锁假设数据一般情况下不会造成冲突,所以在数据进行提交更新的时候,才会正
+  式对数据的冲突与否进行检测,如果发现冲突了,则返回给用户错误的信息,让用户决定如何去做。乐观锁适用于读操作多的场
+  景,这样可以提高程序的吞吐量。
+  假设功能产生并发几率极少,采用乐观锁版本机制对比, 如果有冲突 返回给用户错
+  误的信息
+
+  
+
+### 第二:为什么需要锁(并发控制)
+  在多用户环境中,在同一时间可能会有多个用户更新相同的记录,这会产生冲突。这就是著名的并发性问题
+
+- 丢失更新:一个事务的更新覆盖了其它事务的更新结果,就是所谓的更新丢失。例如:用户1把值从500改为
+    8000,用户B把值从500改为200,则多人同时提交同一条记录,后提交的把之前的提交数据覆盖 。
+-  脏读:当一个事务读取其它完成一半事务的记录时,就会发生脏读。例如:用户A,B看到的值都是500,用户B
+    把值改为200,用户A读到的值仍为500。
+    针对一种问题的解决方案,为解决问题而生的。
+
+解决什么问题呢?主要是解决丢失更新问题如下图理解
+
+![image-20210507110208756](assets/MyBatisPlus.assets/image-20210507110208756.png)
+
+为了解决这些并发带来的问题。 我们需要引入并发控制机制。
+### 第三:乐观锁使用MyBatisPlus的解决方式
+由于锁这个字眼我们需要在数据库加个字段“version”来控制版本
+
+在实体类的字段上加上`@Version`注解
+
+```java
+@Version
+private Integer version;
+
+
+@Bean
+public MybatisPlusInterceptor mybatisPlusInterceptor() {
+    MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+    mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+    return mybatisPlusInterceptor;
+}
+
+
+// 这个也是MyBatisPlus的一个插件 只需要实现MetaObjectHandler就可以了
+@Slf4j
+@Component
+public class MyMetaObjectHandler implements MetaObjectHandler {
+
+
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        log.info("start insert fill ....");
+        this.strictInsertFill(metaObject, "createDate",Date.class, new Date()); // 起始版本 3.3.0(推荐使用)
+        this.strictInsertFill(metaObject, "modifyDate",Date.class, new Date()); // 起始版本 3.3.0(推荐使用)
+
+    }
+
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        log.info("start insert update ....");
+        this.strictUpdateFill(metaObject, "modifyDate",Date.class, new Date()); // 起始版本 3.3.0(推荐使用)
+
+    }
+}
+```
+
+## 代码生成器
+
+AutoGenerator 是 MyBatis-Plus 的代码生成器，通过 AutoGenerator 可以快速生成 Entity、Mapper、Mapper XML、Service、Controller 等各个模块的代码，极大的提升了开发效率。
+
+```java
+package com.xxml.autogenerator;
+
+
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.InjectionConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.LikeTable;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class GeneratorApp {
+    /**
+     * <p>
+     * 读取控制台内容
+     * </p>
+     */
+    public static String scanner(String tip) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder help = new StringBuilder();
+        help.append("请输入" + tip + "：");
+        System.out.println(help.toString());
+        // 判断用户是否输入
+        if (scanner.hasNext()) {
+            // 拿到输入内容
+            String ipt = scanner.next();
+            if (StringUtils.isNotBlank(ipt)) {
+                return ipt;
+            }
+        }
+        throw new MybatisPlusException("请输入正确的" + tip + "！");
+    }
+
+    public static void main(String[] args) {
+
+        String moduleName = scanner("模块名");
+        String tableName = scanner("表名（多个用，号分隔，或者按前缀（pms*））");
+//        String prefixName = scanner("需要替换的表前缀");
+
+
+        // 代码生成器
+        AutoGenerator mpg = new AutoGenerator();
+
+        // 全局配置
+        GlobalConfig gc = new GlobalConfig();
+        // 获得当前项目的路径
+        String projectPath = System.getProperty("user.dir");
+        // 设置生成路径
+        gc.setOutputDir(projectPath + "/src/main/java");
+        // 作者
+        gc.setAuthor("maolei");
+        // 代码生成是不是要打开所在文件夹
+        gc.setOpen(false);
+        // 生成Swagger2注解
+        gc.setSwagger2(true);
+        // 会在mapper.xml 生成一个基础的<ResultMap> 映射所有的字段
+        gc.setBaseResultMap(true);
+        // 同文件生成覆盖
+        gc.setFileOverride(true);
+        //gc.setDateType(DateType.ONLY_DATE)
+        // 实体名：直接用表名  %s=表名
+        gc.setEntityName("%s");
+        // mapper接口名
+        gc.setMapperName("%sMapper");
+        // mapper.xml 文件名
+        gc.setXmlName("%sMapper");
+        // 业务逻辑类接口名
+        gc.setServiceName("%sService");
+        // 业务逻辑类实现类名
+        gc.setServiceName("%sImplService");
+        // 将全局配置设置到AutoGenerator
+        mpg.setGlobalConfig(gc);
+
+
+        // 数据源配置
+        DataSourceConfig dsc = new DataSourceConfig();
+        dsc.setUrl("jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&");
+        dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+        dsc.setUsername("root");
+        dsc.setPassword("123456");
+        mpg.setDataSource(dsc);
+
+        // 包配置
+        PackageConfig pc = new PackageConfig();
+        //  模块名
+        pc.setModuleName(moduleName);
+        // 包名
+        pc.setParent("com.xxml");
+        // 完整的报名： com.xxml.pms
+        mpg.setPackageInfo(pc);
+
+
+        // 自定义配置
+        InjectionConfig cfg = new InjectionConfig() {
+            @Override
+            public void initMap() {
+                // to do nothing
+            }
+        };
+
+        // 如果模板引擎是 velocity
+        String templatePath = "/templates/mapper.xml.vm";
+        // 自定义输出配置
+        List<FileOutConfig> focList = new ArrayList<>();
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(templatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+            }
+        });
+
+        cfg.setFileOutConfigList(focList);
+        mpg.setCfg(cfg);
+
+        // 配置模板
+        TemplateConfig templateConfig = new TemplateConfig();
+
+        // 把已有的xml生成置空
+        templateConfig.setXml(null);
+        mpg.setTemplate(templateConfig);
+
+        // 策略配置
+        StrategyConfig strategy = new StrategyConfig();
+        // 表名的生成策略：下划线转驼峰 pms_product -- PmsProduct
+        strategy.setNaming(NamingStrategy.underline_to_camel);
+        // 列名的生成策略：下划线转驼峰 last_name -- lastName
+        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        //strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
+        //strategy.setEntityLombokModel(true);
+        // 在controller类上是否生成@RestController
+        strategy.setRestControllerStyle(true);
+        // 公共父类
+        //strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");
+
+        if (tableName.indexOf('*') > 0) {
+            // 按前缀生成表
+            strategy.setLikeTable(new LikeTable(tableName.replace('*', '_')));
+        } else {
+            // 要生成的表名 多个用逗号分隔
+            strategy.setInclude(tableName);
+        }
+        // 设置表替换前缀
+//        strategy.setTablePrefix(prefixName);
+        // 驼峰转连字符 比如 pms_product --> controller @RequestMapping("/pms/pmsProduct")
+        //strategy.setControllerMappingHyphenStyle(true);
+        mpg.setStrategy(strategy);
+
+        // 进行生成
+        mpg.execute();
+    }
 }
 ```
 
