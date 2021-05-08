@@ -1,10 +1,10 @@
 #!/bin/bash
 echo "================="
-echo "auto git by JOEY"
-echo "======= 🤪  ========="
+echo "auto git by MaoLei"
+echo "=======  🧐  ========="
 
 echo -e  "
-▶ \033[33;1mgit add .
+▶ \033[33;1mgit add -A
 \033[0m"
 git add -A
 
