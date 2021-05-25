@@ -7,8 +7,10 @@
 
 ![image-20210520170324981](assets/Spring_Data_JPA.assets/image-20210520170324981.png)
 
-JPA在这里遵循Convention over configuration（约定大约配置）的原则，遵循spring 以及JPQL定义的方法命名。Spring提供了一套可以通过命名规则进行查询构建的机制。这套机制会把方法名首先过滤一些关键字，比如 find…By, read…By, query…By, count…By 和 get…By 。系统会根据关键字将命名解析成2个子语句，第一个 By 是区分这两个子语句的关键词。这个 By 之前的子语句是查询子语句（指明返回要查询的对象），后面的部分是条件子语句。如果直接就是 findBy… 返回的就是定义Respository时指定的领域对象集合，同时JPQL中也定义了丰富的关键字：and、or、Between等等，下面我们来看一下JPQL中有哪些关键字：
-------------------------------------------------
+> JPA在这里遵循Convention over configuration（约定大约配置）的原则，遵循spring 以及JPQL定义的方法命名。Spring提供了一套可以通过命名规则进行查询构建的机制。这套机制会把方法名首先过滤一些关键字，比如 find…By, read…By, query…By, count…By 和 get…By 。系统会根据关键字将命名解析成2个子语句，第一个 By 是区分这两个子语句的关键词。这个 By 之前的子语句是查询子语句（指明返回要查询的对象)，后面的部分是条件子语句。如果直接就是 findBy… 返回的就是定义Respository时指定的领域对象集合，同时JPQL中也定义了丰富的关键字：and、or、Between等等，下面我们来看一下JPQL中有哪些关键字：
+
+
+
 ![image-20210520170433562](assets/Spring_Data_JPA.assets/image-20210520170433562.png)
 
 
@@ -170,3 +172,52 @@ public interface UserJpaRepository extends JpaRepository<Users, Integer> {
     }
 ```
 
+
+
+# 三、引入 modelMapper
+
+> 是一个 Object To Object 的工具. 
+
+## 1、 引入 maven 依赖
+
+```xml
+        <modelmapper.version>2.3.9</modelmapper.version>
+     
+<dependency>
+        <groupId>org.modelmapper</groupId>
+        <artifactId>modelmapper</artifactId>
+        <version>${modelmapper.version}</version>
+</dependency>
+```
+
+## 2、添加配置  BeanConfig.java
+
+```java
+@Configuration
+public class BeanConfig {
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration()
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                .setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
+        return modelMapper;
+    }
+
+}
+```
+
+## 3、使用
+
+```java
+modelMapper.map(entity, CaseDTO.class);
+
+modelMapper.map(entities, new TypeToken<List<CaseDTO>>() { }.getType());
+
+```
+
+service:
+
+![image-20210525133743261](assets/Spring_Data_JPA.assets/image-20210525133743261.png)

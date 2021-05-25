@@ -1,0 +1,66 @@
+# 常用方法
+
+## 1、对消耗时间友好的处理
+
+> 毫秒 --> 友好的时间  xh xm xs
+
+```java
+public class TimerFormat {
+
+    public static String TimerFormats(Long timer){
+        Duration duration = new Duration(timer); // in milliseconds
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendDays()
+                .appendSuffix("d ")
+                .appendHours()
+                .appendSuffix("h ")
+                .appendMinutes()
+                .appendSuffix("m ")
+                .appendSeconds()
+                .appendSuffix("s")
+                .toFormatter();
+        String formatted = formatter.print(duration.toPeriod());
+        return formatted;
+    }
+
+    
+}
+```
+
+## 2、字节单位转换
+
+```java
+
+public class ConvertSize {
+    public  static  String Convert(long size) {
+        //如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义
+        if (size < 1024) {
+            return String.valueOf(size) + "B";
+        } else {
+            size = size / 1024;
+        }
+        //如果原字节数除于1024之后，少于1024，则可以直接以KB作为单位
+        //因为还没有到达要使用另一个单位的时候
+        //接下去以此类推
+        if (size < 1024) {
+            return String.valueOf(size) + "KB";
+        } else {
+            size = size / 1024;
+        }
+        if (size < 1024) {
+            //因为如果以MB为单位的话，要保留最后1位小数，
+            //因此，把此数乘以100之后再取余
+            size = size * 100;
+            return String.valueOf((size / 100)) + "."
+                    + String.valueOf((size % 100)) + "MB";
+        } else {
+            //否则如果要以GB为单位的，先除于1024再作同样的处理
+            size = size * 100 / 1024;
+            return String.valueOf((size / 100)) + "."
+                    + String.valueOf((size % 100)) + "GB";
+        }
+    }
+}
+
+```
+
