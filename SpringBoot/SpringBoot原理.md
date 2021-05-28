@@ -1,3 +1,5 @@
+[TOC]
+
 # SpringBoot原理
 
 > @SpringBootApplication 是一个复合注解，它由三个注解组成。

@@ -2,7 +2,16 @@
 
 ## 1、对消耗时间友好的处理
 
-> 毫秒 --> 友好的时间  xh xm xs
+> 毫秒 --> 友好的时间  xh xm xs 
+
+
+```xml
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.10</version>
+        </dependency>
+```
 
 ```java
 public class TimerFormat {
