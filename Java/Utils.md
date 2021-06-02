@@ -73,3 +73,109 @@ public class ConvertSize {
 
 ```
 
+
+
+## 3、将列表按照某个属性分组
+
+```xml
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.73</version>
+        </dependency>
+```
+
+```java
+// entity
+
+@Data
+public class Coupon {
+    private Integer couponId;
+    private Integer price;
+    private String name;
+}
+
+// service
+public class ListGroupTest {
+    public static void main(String[] args) {
+        List<Coupon> couponList = new ArrayList<>();
+        Coupon coupon1 = new Coupon(1,100,"优惠券1");
+        Coupon coupon2 = new Coupon(2,200,"优惠券2");
+        Coupon coupon3 = new Coupon(3,300,"优惠券3");
+        Coupon coupon4 = new Coupon(3,400,"优惠券4");
+        couponList.add(coupon1);
+        couponList.add(coupon2);
+        couponList.add(coupon3);
+        couponList.add(coupon4);
+
+        Map<Integer, List<Coupon>> resultList = couponList.stream().collect(Collectors.groupingBy(Coupon::getCouponId));
+        System.out.println(JSON.toJSONString(resultList, SerializerFeature.PrettyFormat));
+    }
+}
+
+// out
+{
+	1:[
+			{
+				"couponId":1,
+				"name":"优惠券1",
+				"price":100
+			}
+	  ],
+	2:[
+			{
+				"couponId":2,
+				"name":"优惠券2",
+				"price":200
+			}
+	  ],
+	3:[
+			{
+				"couponId":3,
+				"name":"优惠券3",
+				"price":300
+			},
+			{
+				"couponId":3,
+				"name":"优惠券4",
+				"price":400
+			}
+	  ]
+}
+
+
+// 如果分组后，分组内并不想是对象，而是对象的属性，也可以做到的。
+public class ListGroupTest2 {
+    public static void main(String[] args) {
+        List<Coupon> couponList = new ArrayList<>();
+        Coupon coupon1 = new Coupon(1,100,"优惠券1");
+        Coupon coupon2 = new Coupon(2,200,"优惠券2");
+        Coupon coupon3 = new Coupon(3,300,"优惠券3");
+        Coupon coupon4 = new Coupon(3,400,"优惠券4");
+        couponList.add(coupon1);
+        couponList.add(coupon2);
+        couponList.add(coupon3);
+        couponList.add(coupon4);
+
+        Map<Integer, List<String>> resultList = couponList.stream().collect(Collectors.groupingBy(Coupon::getCouponId,Collectors.mapping(Coupon::getName,Collectors.toList())));
+        System.out.println(JSON.toJSONString(resultList, SerializerFeature.PrettyFormat));
+    }
+}
+ 
+// out
+{
+	1:[
+		"优惠券1"
+	  ],
+	2:[
+		"优惠券2"
+	  ],
+	3:[
+		"优惠券3",
+		"优惠券4"
+	  ]
+}
+
+
+```
+
