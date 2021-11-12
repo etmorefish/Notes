@@ -1,0 +1,23 @@
+
+查看当前内核
+uaname -a
+
+查看所有内核
+dpkg --get-selections | grep linux
+
+清理内核配置文件
+sudo apt-get purge
+sudo dpkg -P linux-********
+
+更新系统引导
+sudo update-grub 
+
+引导顺序
+sudo vim /etc/default/grub
+#GRUB_DEFAULT=0
+GRUB_DEFAULT="1>2"
+
+sudo apt install gnome-control-center
+
+
+ssh u20@192.168.122.139

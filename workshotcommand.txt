@@ -1,0 +1,205 @@
+
+
+source  /home/lei/qiming/cubex/venv/bin/activate
+shh shell终端不掉线 
+ssh -o ServerAliveInterval=60 xxml@49.235.110.105
+ssh root@192.168.2.28
+chrome、vscode花屏
+关闭gup硬件加速、--disable-gpu
+生产环境：192.168.2.203
+测试环境：192.168.2.79
+		192.168.2.28
+挂载点
+sudo mount -t nfs 192.168.2.28:/gcbi/workspace /home/lei/qiming/cubex/app/store/workspace/
+sudo mount -t nfs 192.168.2.28:/gcbi/sample/test-sample /home/lei/qiming/cubex/app/store/test-sample/
+
+解决Host key verification failed. 
+ssh-keygen -R 你要访问的IP地址
+
+离线安装 oh-my-zsh
+a. 搜索 setup_ohmyzsh 字符串，将调用的地方删除
+b. 搜索字符串 You already have Oh My Zsh installed.，并将附近 if 语句全部删除
+ZSH_THEME="random"
+
+
+ssh u20@192.168.3.171
+sudo mount -t nfs 192.168.3.171:/home/u20 /mnt/u20/
+
+假设目标url 为：127.0.0.1:8080/login
+
+使用curl发送GET请求：curl protocol://address:port/url?args
+
+curl http://127.0.0.1:8080/login?admin&passwd=12345678
+ 使用curl发送POST请求： curl -d "args" protocol://address:port/url
+
+curl -d "user=admin&passwd=12345678" http://127.0.0.1:8080/login
+ 这种方法是参数直接在header里面的，如需将输出指定到文件可以通过重定向进行操作.
+ curl -H "Content-Type:application/json" -X POST -d 'json data' URL
+curl -H "Content-Type:application/json" -X POST -d '{"user": "admin", "passwd":"12345678"}' http://127.0.0.1:8000/login
+
+
+
+docker wechat
+
+curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh | bash
+curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+  | DOCHAT_DPI=192 bash
+curl -sL https://raw.githubusercontent.com/huan/docker-wechat/master/dochat.sh \
+  | DOCHAT_SKIP_PULL=true bash
+DOCHAT_SKIP_PULL=true ./dochat.sh
+DOCHAT_DEBUG=true
+DOCHAT_DPI=192 DOCHAT_WECHAT_VERSION=2.9.0.114 DOCHAT_SKIP_PULL=true ./dochat.sh
+
+微信分辨率 
+env WINEPREFIX="$HOME/.deepinwine/Deepin-WeChat" /usr/bin/deepin-wine winecfg
+env WINEPREFIX="$HOME/.deepinwine/Deepin-QQMusic" /usr/bin/deepin-wine winecfg
+env WINEPREFIX="/home/lei/.deepinwine/Deepin-WXWork" /usr/bin/deepin-wine winecfg
+
+
+
+export TOWER_SMTP_HOST="smtp.qiye.163.com"
+export TOWER_SMTP_PORT="587"
+export TOWER_SMTP_USER="maolei@gcbi.com.cn"
+export TOWER_SMTP_PASSWORD="d3LfhU8wYvnupp2b"
+
+outlook.office365.com
+587
+qqmail
+mokjzclzlhaibche
+
+升级内核
+	
+sudo vim /etc/default/grub
+#GRUB_DEFAULT=0
+GRUB_DEFAULT="1>2"
+sudo update-grub
+
+ssh-keygen -R [hostname-or-IP]
+
+python 虚拟环境失效 是因为 activate  虚拟环境路径错误
+安装模块 python -m pip install xxx
+
+英文文件夹
+export LANG=en_US
+xdg-user-dirs-gtk-update
+export LANG=zh_CN
+
+
+
+切换系统编码 dos2unix [file]
+
+捕获窗口
+xprop WM_CLASS
+StartupWMClass=electronic-wechat
+
+python -m virtualenv venv
+
+分辨率不识别
+Exec=sh -c "QT_SCALE_FACTOR=2 netease-cloud-music %F"
+--force-device-scale-factor=2.0 
+
+
+# 安装 jupyter_contrib_nbextensions 和 jupyter_nbextensions_configurator
+pip install jupyter_contrib_nbextensions
+pip install jupyter_nbextensions_configurator
+jupyter contrib nbextension install --user
+jupyter nbextensions_configurator enable --user
+jupyter nbextension enable
+
+jupyter-contrib-core              0.3.3
+jupyter-contrib-nbextensions      0.5.1
+jupyter-highlight-selected-word   0.2.0
+jupyter-latex-envs                1.4.6
+jupyter-nbextensions-configurator 0.4.1
+jupyterlab-pygments 
+
+
+
+[Desktop Entry]
+Name=Jupyter Notebook
+Version=1.0
+Type=Application
+Exec=/home/lei/Documents/jupyter-venv/bin/jupyter-notebook 
+Icon=/home/lei/Documents/jupyter-venv/bin/jupyter.svg
+Terminal=false
+StartupNotify=true
+
+df = df.drop(df[<some boolean condition>].index)
+用法：DataFrame.drop(labels=None,axis=0, index=None, columns=None, inplace=False)
+
+参数说明：
+labels 就是要删除的行列的名字，用列表给定
+axis 默认为0，指删除行，因此删除columns时要指定axis=1；
+index 直接指定要删除的行
+columns 直接指定要删除的列
+inplace=False，默认该删除操作不改变原数据，而是返回一个执行删除操作后的新dataframe；
+inplace=True，则会直接在原数据上进行删除操作，删除后无法返回。
+
+因此，删除行列有两种方式：
+1）labels=None,axis=0 的组合
+2）index或columns直接指定要删除的行或列
+
+scp [r] /path/filename username@servername:/path
+scp  root@192.168.2.28:/root/weblogapi/h1.json /home/lei/
+同步时间
+ntpdate time.nist.gov
+
+
+chmod -R 777 /var
+sudo chown -R 用户名.组名 目录名
+
+wget --no-check-certificate -O ~/.config/clash/config.yaml https://sp777.icu/link/GcTiDd9u4R9GclRs?clash=1    
+wget --no-check-certificate -O ~/.config/clash/config.yaml https://sp777.icu/link/GcTiDd9u4R9GclRs?clash=1
+
+
+pip: https://pypi.python.org/simple
+
+ipython 颜色： %colors
+
+
+手机号正则： re.match(r"^1[35678]\d{9}$", tel)
+
+安装算法包：python setup.py bdist_wheel
+
+安装Markupsafe失败 pip install --upgrade pip setuptools==45.2.0
+
+conda create --name myenv python=3.5
+conda env remove --name myenv
+
+virtualenv .venv -p /home/lei/.conda/envs/py37/bin/python
+
+python 3.7 + mysql 8.0 + pymysql
+这时报错pymysql.err.OperationalError: (1045, u"Access denied for user 'root'@'localhost' (using password: No)")
+最简单的方法是更换了root密码的认证方式解决的，新版mysql使用的caching_sha2_password，换成 mysql_native_password 就可以连上了。
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'yourpassword';
+ 
+
+kvm 给虚拟机扩容，然后安装gparted分区工具 
+    qemu-img info slave05.qcow2
+
+    qemu-img resize slave05.qcow2 +400G
+
+py35                     /home/lei/.conda/envs/py35
+py37                     /home/lei/.conda/envs/py37
+
+virtualenv venv -p /home/lei/.conda/envs/py35/bin/python
+virtualenv venv -p /home/lei/.conda/envs/py37/bin/python
+
+
+curl -H "Content-Type:application/json" -X POST -d '{"loginName": "zq", "password":"a123456"}' http://47.100.15.176:10008/api/tokens
+
+curl -H "Content-Type:application/json" -X POST -d '{"loginName": "zq", "password":"a123456"}' http://127.0.0.1:10008/api/tokens
+
+rsync -P --rsh=ssh home.tar 192.168.205.34:/home/home.tar
+alias scpr="rsync -P --rsh=ssh"
+
+python3 -m virtualenv venv -p /home/lei/miniconda3/envs/py37/bin/python
+python3 -m virtualenv venv -p /home/lei/miniconda3/envs/py35/bin/python
+
+docker run -d --name=webdav-aliyundriver --restart=always -p 8888:8080  -v /etc/localtime:/etc/localtime -v /etc/aliyun-driver/:/etc/aliyun-driver/ -e TZ="Asia/Shanghai" -e ALIYUNDRIVE_REFRESH_TOKEN="29f69148f14c4f44aef2e15f76799952" -e ALIYUNDRIVE_AUTH_PASSWORD="admin" -e JAVA_OPTS="-Xmx512m" zx5253/webdav-aliyundriver
+
+# /etc/aliyun-driver/ 挂载卷自动维护了最新的refreshToken，建议挂载
+# ALIYUNDRIVE_AUTH_PASSWORD 是admin账户的密码，建议修改
+# JAVA_OPTS 可修改最大内存占用，比如 -e JAVA_OPTS="-Xmx512m" 表示最大内存限制为512m
+
+git reset HEAD~n  n为回退第几个版本
