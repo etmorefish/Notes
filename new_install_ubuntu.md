@@ -178,8 +178,6 @@ docker exec -it mongo mongo admin
 
 10.RabbitMQ
 
-```bash
-
 If you’re using Ubuntu or Debian install RabbitMQ by executing this command:
 
 $ sudo apt-get install rabbitmq-server
@@ -188,6 +186,40 @@ Or, if you want to run it on Docker execute this:
 $ docker run -d -p 5672:5672 rabbitmq
 When the command completes, the broker will already be running in the background, ready to move messages for you: Starting rabbitmq-server: SUCCESS.
 
+```bash
 
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3.9-management
 
+# 启动 rabbitmq 服务
+service rabbitmq-server start
+
+# 关闭 rabbitmq 服务
+service rabbitmq-server stop
+
+# 重启 rabbitmq 服务
+service rabbitmq-server restart
+
+# 查看 rabbitmq 状态
+service rabbitmq-server status
+# 添加用户
+sudo rabbitmqctl add_user  admin  admin  
+
+# 赋予权限
+sudo rabbitmqctl set_user_tags admin administrator
+
+# 赋予 virtual host 中所有资源的配置、写、读权限
+sudo rabbitmqctl  set_permissions -p / admin '.*' '.*' '.*'
+
+# rabbitmq_manager
+
+# rabbitmq_manager 是官方提供的管理工具，官方地址：https://www.rabbitmq.com/management.html
+
+# 启用 rabbitmq_manager
+cd /etc/rabbitmq
+sudo rabbitmq-plugins enable rabbitmq_management
+ 
+# 访问 rabbitmq_manager：
+# 地址：http://localhost:15672
+# 账户：admin
+# 密码：admin
 ```
