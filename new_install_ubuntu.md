@@ -188,7 +188,7 @@ When the command completes, the broker will already be running in the background
 
 ```bash
 
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3.9-management
+docker run -it  --name rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3.9-management
 
 # 启动 rabbitmq 服务
 service rabbitmq-server start

@@ -3,7 +3,7 @@ from celery import Celery
 
 app = Celery('proj',
              backend='redis://0.0.0.0',
-             broker='pyamqp://admin:admin@127.0.0.1//',
+             broker='pyamqp://guest:guest@127.0.0.1//',
              include=['proj.tasks'])
 
 # Optional configuration, see the application user guide.
