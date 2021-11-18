@@ -24,6 +24,6 @@ echo -e "
 "
 echo -e "\033[37;1mstart pushing ...\033[0m
 "
-git push
+git push -u origin main
 echo -e "
 \033[37;1mAll Done\033[0m"

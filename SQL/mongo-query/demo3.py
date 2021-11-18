@@ -5,6 +5,8 @@ import pymongo
 
 import random
 mongodbUri = 'mongodb://admin:123456@localhost:27017/admin'
+mongodbUri = 'mongodb://admin:123456@localhost:27017'
+
 client = pymongo.MongoClient(mongodbUri)
 db = client.somedb
 # db.user.drop()
