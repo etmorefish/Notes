@@ -1,5 +1,4 @@
 
-
 ```mysql
 -- 查看一个表的结构，使用命令：
 DESC students;
@@ -30,4 +29,3 @@ ALTER TABLE students CHANGE COLUMN birth birthday VARCHAR(20) NOT NULL;
 ```mysql
 ALTER TABLE students DROP COLUMN birthday;
 ```
-
