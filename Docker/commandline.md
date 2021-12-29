@@ -91,4 +91,5 @@ docker exec -it mongo mongo admin
 > db.auth('admin', '123456')
 
 ```
+
 在执行docker run的时候如果添加--rm参数，则容器终止后会立刻删除。--rm参数和-d参数不能同时使用。
