@@ -2,7 +2,7 @@
 # @lc app=leetcode.cn id=278 lang=python3
 #
 # [278] 第一个错误的版本
-#
+# 二分查找
 
 # @lc code=start
 # The isBadVersion API is already defined for you.

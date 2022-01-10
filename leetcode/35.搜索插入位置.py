@@ -2,7 +2,7 @@
 # @lc app=leetcode.cn id=35 lang=python3
 #
 # [35] 搜索插入位置
-#
+#  二分查找
 
 # @lc code=start
 from typing import List

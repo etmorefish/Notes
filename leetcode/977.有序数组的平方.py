@@ -2,7 +2,7 @@
 # @lc app=leetcode.cn id=977 lang=python3
 #
 # [977] 有序数组的平方
-#
+# 双指针
 
 # @lc code=start
 from typing import List

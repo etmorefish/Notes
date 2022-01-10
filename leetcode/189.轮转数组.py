@@ -2,7 +2,7 @@
 # @lc app=leetcode.cn id=189 lang=python3
 #
 # [189] 轮转数组
-#
+# 双指针
 
 # @lc code=start
 from typing import List
