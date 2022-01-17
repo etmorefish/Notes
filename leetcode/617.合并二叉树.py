@@ -13,6 +13,11 @@
 #         self.right = right
 
 class Solution(object):
+	"""广度优先搜索 + 队列
+
+	Args:
+		object ([type]): [description]
+	"""
 	def mergeTrees(self, t1, t2):
 		"""
 		:type t1: TreeNode
