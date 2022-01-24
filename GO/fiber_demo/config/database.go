@@ -1,11 +1,23 @@
 package config
 
-import "gorm.io/gorm"
-
+import (
+	"github.com/programmerug/fibergorm/entities"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
 
 var Database *gorm.DB
 
-func Connect(){
+func Connect() error {
 	var err error
-	Database, err = gorm.Open(sqllite.Open('fibergorm.db', &gorm.Config{}))
+
+	Database, err = gorm.Open(sqlite.Open("fibergorm.db"), &gorm.Config{})
+
+	if err != nil {
+		panic(err)
+	}
+
+	Database.AutoMigrate(&entities.Dog{})
+
+	return nil
 }
