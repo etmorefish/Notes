@@ -149,9 +149,9 @@ chmod -R 777 /var
 sudo chown -R 用户名.组名 目录名
 
 wget --no-check-certificate -O ~/.config/clash/config.yaml https://sp777.icu/link/GcTiDd9u4R9GclRs?clash=1    
-wget --no-check-certificate -O ~/.config/clash/config.yaml https://sp777.icu/link/GcTiDd9u4R9GclRs?clash=1
+wget --no-check-certificate -O ~/.config/clash/config.yaml http://galben.xyz/link/D4QeZjGyKnJuOb62?clash=1
 
-
+http://sub1.galbense.xyz/sub?target=clash&udp=true&filename=maoxiong&interval=86400&append_info&url=http://galben.xyz/link/D4QeZjGyKnJuOb62?clash=1&extend=1
 pip: https://pypi.python.org/simple
 
 ipython 颜色： %colors
