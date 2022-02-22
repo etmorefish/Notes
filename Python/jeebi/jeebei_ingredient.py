@@ -15,7 +15,7 @@ db = pymysql.connect(host=host,port=port, user=user, password=password, database
 print("连接数据库成功")
 cursor = db.cursor()
 print(cursor)
-for i in range(18603, 18680):
+for i in range(3469, 3533):
     url = "https://www.jeebei.com/pingce/chengfen/{}.html".format(i)
     headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.16 Safari/537.36 Edg/99.0.1150.7"}
 
@@ -25,7 +25,7 @@ for i in range(18603, 18680):
         name = description = safe = recommend = effects = None
 
         with db.cursor() as cursor:
-            sql = "INSERT INTO ingredient (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
+            sql = "INSERT INTO ingredient_copy1 (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
             cursor.execute(sql, (name, effects, recommend, safe, description, number))
         db.commit()
         
@@ -45,22 +45,22 @@ for i in range(18603, 18680):
         else:
             recommend = 0
         effects = target.xpath("//p/text()")[0].split("：")[-1].strip()  # 功效 str
-        if i <= 3704:
-            with db.cursor() as cursor:
-                sql = "UPDATE ingredient SET name=%s, effects=%s, recommend=%s, safe=%s, description=%s, number=%s WHERE id=%s;"
-                cursor.execute(sql, (name, effects, int(recommend), safe, description, int(number), i))
-            db.commit()
-        else:
-            with db.cursor() as cursor:
-                sql = "INSERT INTO ingredient (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
-                cursor.execute(sql, (name, effects, int(recommend), safe, description, int(number)))
-            db.commit()
+        # if i <= 3704:
+        #     with db.cursor() as cursor:
+        #         sql = "UPDATE ingredient_copy1 SET name=%s, effects=%s, recommend=%s, safe=%s, description=%s, number=%s WHERE id=%s;"
+        #         cursor.execute(sql, (name, effects, int(recommend), safe, description, int(number), i))
+        #     db.commit()
+        # else:
+        with db.cursor() as cursor:
+            sql = "INSERT INTO ingredient_copy1 (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
+            cursor.execute(sql, (name, effects, int(recommend), safe, description, int(number)))
+        db.commit()
             
         # else:
         #     name = description = safe = recommend = effects = None
 
         #     with db.cursor() as cursor:
-        #         sql = "INSERT INTO ingredient (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
+        #         sql = "INSERT INTO ingredient_copy1 (name, effects, recommend, safe, description, number) VALUES (%s, %s, %s, %s, %s, %s);"
         #         cursor.execute(sql, (name, effects, recommend, safe, description, number))
         #     db.commit()
         

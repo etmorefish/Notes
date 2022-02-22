@@ -3,6 +3,8 @@ import requests
 from lxml import etree
 import pymysql
 import time
+import re
+import json
 
 def get_mysql_connection(user, password, host, port, database):
     """[summary]
@@ -12,7 +14,7 @@ def get_mysql_connection(user, password, host, port, database):
     return connect
 
 def get_items(path):
-    """获取爬取的产品名称
+    """读取文件中的 产品名称 or url
 
     Args:
         path ([type]): [description]
@@ -36,11 +38,73 @@ def get_item_url(item):
     res2 = etree.HTML(html2)
     item_url = res2.xpath('//div[@class="news_list_title"]/p/a/@href')[0]
     return item_url
-    
+
         
-if __name__ == '__main__':
-    path = 'item.py'
-    items = get_items(path)
+def get_item_html(url):
+    headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.16 Safari/537.36 Edg/99.0.1150.7"}
+    resp = requests.get(url=url, headers=headers, timeout=200)
+    html = resp.content.decode('UTF-8')
+    return html
+    
+def item_spider(html):
+    htmls = etree.HTML(html)
+    target1 = htmls.xpath("//table[@class='table']")[0]
+    trs = target1.xpath("./tr")
+    data = {}
+    ingredient_list = []
+    for i in range(1, len(trs)-1):
+        ingredient_id = trs[i].xpath("./td[1]/@data")[0]
+        ingredient_name = trs[i].xpath("./td[1]/span/text()")[0]
+        if trs[i].xpath("./td[3]/span/text()"):
+            safe = trs[i].xpath("./td[3]/span/text()")[0]
+        else:
+            safe = 0
+        hxcf = len(trs[i].xpath("./td[4]/span/img")) or 0
+        acne = trs[i].xpath("./td[5]/span/text()") or 0
+        uvan = trs[i].xpath("./td[6]/img/@src") or None
+        # print(uvan)
+        uv = None
+        if uvan is not None:
+            uva = re.findall("icon/(.*).gif", uvan[0])
+            uvb = re.findall("icon/(.*).gif", uvan[1])
+            uv = "|".join(uva + uvb)
+        uv = uv or uvan
+        tmp = {
+            "ingredient_id": ingredient_id,
+            "ingredient_name": ingredient_name,
+            "safe": safe,
+            "hxcf": hxcf,
+            "acne": acne,
+            "uv": uv,
+        }
+        ingredient_list.append(tmp)
+        
+    atttions = htmls.xpath("//div[@class='safe_detail']/p/text()")
+    xj = atttions[0].split("：")[1]
+    ffj = atttions[1].split("：")[1]
+    fxcf = atttions[2].split("：")[1]
+    yfsy = atttions[3].split("：")[1]
+    atttion = {
+        "xj": xj,
+        "ffj": ffj,
+        "fxcf": fxcf,
+        "yfsy": yfsy,  
+    }
+    data['ingredient_list'] = ingredient_list
+    data['atttion'] = atttion
+    
+    return data
+
+def save_to_file(data: dict):
+    res  = json.dumps(data, ensure_ascii=False)
+    with open("out.txt", 'a+', encoding='utf-8') as f:
+        f.writelines(res)
+        f.write('\n')
+
+def main():
+    path = 'item_urls'
+
+    urls = get_items(path)
     
     user = 'root'
     password = '123'
@@ -48,11 +112,29 @@ if __name__ == '__main__':
     port=3306
     database='demo'
     ty = 'charset=utf8mb4'
+    DOMAIN = "https://www.jeebei.com" 
     
     db = get_mysql_connection(user, password, host, port, database)
     
-    urls = []
-    for item in items:
-        url = get_item_url(item)
-        print(url)
+    # urls = []
+    # for item in items:
+    #     url = DOMAIN + get_item_url(item)
+    #     print(url)
+    #     urls.append(url)
+        
+    # urls 写入文件    
+    # with open('.item_urls', 'w') as f:
+    #     f.writelines(urls)
+    a = 1
+    for url in urls:
+        print(f" {a} {url}")
+        html = get_item_html(url)
+        data = item_spider(html)
+        save_to_file(data)
+        time.sleep(0.5)
+        a += 1
+        
     
+        
+if __name__ == '__main__':
+    main()
