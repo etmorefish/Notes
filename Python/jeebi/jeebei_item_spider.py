@@ -97,14 +97,13 @@ def item_spider(html):
 
 def save_to_file(data: dict):
     res  = json.dumps(data, ensure_ascii=False)
-    with open("out.txt", 'a+', encoding='utf-8') as f:
+    with open("yunqi_out.txt", 'a+', encoding='utf-8') as f:
         f.writelines(res)
         f.write('\n')
 
 def main():
-    path = 'item_urls'
-
-    urls = get_items(path)
+    item_path = 'yunqi_item'
+    items = get_items(item_path)
     
     user = 'root'
     password = '123'
@@ -116,22 +115,26 @@ def main():
     
     db = get_mysql_connection(user, password, host, port, database)
     
+    # 1 url write in file
     # urls = []
     # for item in items:
     #     url = DOMAIN + get_item_url(item)
     #     print(url)
     #     urls.append(url)
         
-    # urls 写入文件    
-    # with open('.item_urls', 'w') as f:
+    # # urls 写入文件    
+    # with open('yunqi_item_urls', 'w') as f:
     #     f.writelines(urls)
+    
+    # # 2 read url and spider
+    urls = get_items("yunqi_item_urls")
     a = 1
     for url in urls:
         print(f" {a} {url}")
         html = get_item_html(url)
         data = item_spider(html)
         save_to_file(data)
-        time.sleep(0.5)
+        time.sleep(0.3)
         a += 1
         
     
