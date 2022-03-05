@@ -155,7 +155,6 @@ Categories=Development
 docker run -itd --name mysql --restart=always -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
 
 # redis
-docker run -itd --name redis --restart=always -p 6379:6379  redis
 
 # postgres
 docker run --name some-postgres --restart=always -e POSTGRES_PASSWORD=123456 -p 5432:5432 -d postgres
