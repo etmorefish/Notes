@@ -18,7 +18,6 @@ func swap(pa *int, pb *int) {
 	*pb = temp // main::b = temp
 }
 
-
 func main() {
 	var a int = 10
 	var b int = 20
@@ -26,7 +25,6 @@ func main() {
 	swap(&a, &b)
 
 	fmt.Println("a = ", a, " b = ", b)
-
 
 	var p *int
 
