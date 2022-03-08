@@ -8,9 +8,10 @@ func main() {
 	go func() {
 		for i := 0; i < 5; i++ {
 			c <- i
-			//close可以关闭一个channel
-			close(c)
+			// close(c) //panic
 		}
+		//close可以关闭一个channel
+		close(c)
 	}()
 
 	for {

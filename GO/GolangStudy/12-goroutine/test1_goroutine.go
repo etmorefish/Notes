@@ -22,12 +22,11 @@ func main() {
 
 	fmt.Println("main goroutine exit")
 
-	/*
-		i := 0
-		for {
-			i++
-			fmt.Printf("main goroutine: i = %d\n", i)
-			time.Sleep(1 * time.Second)
-		}
-	*/
+	i := 0
+	for {
+		i++
+		fmt.Printf("main goroutine: i = %d\n", i)
+		time.Sleep(1 * time.Second)
+	}
+
 }
