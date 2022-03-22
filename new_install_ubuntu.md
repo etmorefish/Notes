@@ -222,3 +222,12 @@ sudo rabbitmq-plugins enable rabbitmq_management
 # 账户：admin
 # 密码：admin
 ```
+
+Enable/Disable Wayland:
+```bash
+$ sudo vim /etc/gdm3/custom.conf
+
+WaylandEnable=true  # or  false
+
+$ sudo systemctl restart gdm3
+```
