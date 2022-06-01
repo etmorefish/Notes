@@ -14,7 +14,7 @@ func HelloHandler(c *gin.Context) { // 把处理函数放在这里，可以处�
 
 // Router 配置路由信息
 func Router() *gin.Engine {
-
+	
 	r.GET("/hello", HelloHandler) // 这样这个路由就比较简洁了。
 	return r
 }

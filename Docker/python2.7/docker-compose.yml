@@ -1,0 +1,4 @@
+version: '3'
+services:
+  py2:
+    image: jetlabs/python2.7
