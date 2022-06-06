@@ -759,5 +759,114 @@ func main() {
 userid 6a4ce159-4394-4d13-afe3-2880ab00ae42
 
 
+	user := resource.GetUser(ctx)
+	h.Logger.Debug("[xxml] user: %v", user)
+	userRole := user.Role
+	if userRole == "VDC管理员" {
+		h.Logger.Debug("[xxml] userRole is vdc admin")
+		res := []*host_group.ListResp{}
+		for _, host := range data {
+			if host.Name == "默认主机组" {
+				res = append(res, host)
+			}
+		}
+		h.Logger.Debug("[xxml] res: ", res)
+
+		h.ResponseSucc(ctx, map[string]interface{}{
+			"data":       res,
+			"totalCount": total,
+			"pageNumber": pNum,
+			"pageSize":   pSize,
+		})
+		return
+	}
+
+
+
+
+	type resourceCtrl struct {
+	*apiBase
+	todayResourceStatsRepo repo.TodayResourceStatsRepo
+	logic                  resource.ResourceLogic
+	identityService        identity.IdentityService
+}
+
+func NewResource(b *apiBase) *resourceCtrl {
+	return &resourceCtrl{
+		apiBase:                b,
+		logic:                  resource.NewResourceLogic(b.DB, b.SrvBase, b.Logger),
+		todayResourceStatsRepo: repo.NewTodayResourceStat(b.DB),
+	}
+}
+
+func (r *resourceCtrl) getTenantavailableZoneIds(userID, userRole string) (availableZoneIds []string, err error) {
+	r.Logger.Debug("[xxml] getTenantavailableZoneIds coming...")
+
+	if userRole == "VDC管理员" {
+		var vids []string
+		user, std := r.identityService.GetUserInfo(&identity.GetUserInfoReq{Uid: userID})
+		if std != nil && !std.IsSuccess() {
+			return nil, std
+		}
+		if user == nil && std == nil {
+			return nil, cmdbErr.ErrUnexpected
+		}
+		for _, v := range user.Aggregation.UserVdcs {
+			vids = append(vids, v.ID)
+		}
+		if len(vids) == 1 {
+			vdc, std := r.identityService.GetVdc(&identity.GetVdcReq{ID: vids[0]})
+			if std != nil && !std.IsSuccess() {
+				return nil, std
+			}
+			availableZoneIds = vdc.Aggregation.AvailableZoneIDs
+		}
+		return
+	}
+	return
+}
+
+
+
+
+	user := resource.GetUser(ctx)
+	if user.Role == "VDC管理员" {
+		availableZoneIds, err := r.getTenantavailableZoneIds(user.UserId, user.Role)
+		r.Logger.Debug("[xxml] getTenantavailableZoneIds: %v", availableZoneIds)
+
+		if cmdbErr.ErrCheck(err) {
+			r.Logger.Error(err)
+			r.ResponseFail(ctx, http.StatusInternalServerError, cmdbErr.NewError(err))
+			return
+		}
+		out := []*models.Resource{}
+
+		// 初始化map
+		set := make(map[string]struct{})
+
+		// 将list内容传递进map,只根据key判断，所以不需要关心value的值，用struct{}{}表示
+		for _, value := range availableZoneIds {
+			set[value] = struct{}{}
+		}
+
+		// 检查元素是否在map
+		for _, host := range data {
+			if _, ok := set[host.AvailableZoneId]; ok {
+				out = append(out, host)
+				fmt.Printf("%s is in the list \n", host.AvailableZoneId)
+			} else {
+				fmt.Printf("%s is not in the list \n", host.AvailableZoneId)
+			}
+		}
+		r.Logger.Debug("[xxml] out: ", out)
+
+		r.ResponseSucc(ctx, map[string]interface{}{
+			"totalCount": out,
+			"data":       data,
+			"pageNumber": pNum,
+			"pageSize":   pSize,
+		})
+		return
+	}
 
 */
