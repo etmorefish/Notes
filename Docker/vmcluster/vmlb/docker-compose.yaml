@@ -1,0 +1,31 @@
+version: '3.1'
+services:
+  insert_nginx:
+    restart: always
+    image: nginx
+    container_name: insert_nginx
+    privileged: false
+    pid: "host"
+    cpus: 1
+    mem_limit: 1024m
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - $PWD/insert_nginx.conf:/etc/nginx/nginx.conf
+
+  select_nginx:
+    restart: always
+    image: nginx
+    container_name: select_nginx
+    privileged: false
+    pid: "host"
+    cpus: 1
+    mem_limit: 1024m
+    ports:
+      - 8090:8090
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - $PWD/select_nginx.conf:/etc/nginx/nginx.conf
