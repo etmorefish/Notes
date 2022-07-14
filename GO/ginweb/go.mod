@@ -2,7 +2,10 @@ module ginweb
 
 go 1.17
 
-require github.com/gin-gonic/gin v1.8.0
+require (
+	github.com/gin-gonic/gin v1.8.0
+	gopkg.in/yaml.v2 v2.4.0
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -22,5 +25,4 @@ require (
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
