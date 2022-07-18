@@ -206,3 +206,7 @@ WantedBy=multi-user.target
 [root@Prom prometheus]# curl -X POST http://127.0.0.1:9090/-/reload
 
 ```
+
+8、prometheus页面警告
+--------
+解决方法：在服务器输入命令：ntpdate ntp.aliyun.com 同步时间即可正常~
