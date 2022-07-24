@@ -76,3 +76,6 @@ services:
 
 ```
 
+  - job_name: "influx-cadvisor"
+    static_configs:
+      - targets: ["178.104.163.53:8070", "178.104.163.26:8070", "178.104.163.151:8070"]

@@ -46,15 +46,15 @@ docker run -p 8086:8086 -d \
       -v influxdb2:/var/lib/influxdb2 \
       -e DOCKER_INFLUXDB_INIT_MODE=upgrade \
       -e DOCKER_INFLUXDB_INIT_USERNAME=root \
-      -e DOCKER_INFLUXDB_INIT_PASSWORD=123456@qwe \
-      -e DOCKER_INFLUXDB_INIT_ORG=my-org \
-      -e DOCKER_INFLUXDB_INIT_BUCKET=my-bucket \
-      influxdb:2.3
+      -e DOCKER_INFLUXDB_INIT_PASSWORD=huayun@123 \
+      -e DOCKER_INFLUXDB_INIT_ORG=huayun \
+      -e DOCKER_INFLUXDB_INIT_BUCKET=prometheus \
+      influxdb
       
 export INFLUX_USERNAME=root
-export INFLUX_PASSWORD=123456@qwe
+export INFLUX_PASSWORD=huayun@123
 export DOCKER_INFLUXDB_INIT_USERNAME=root
-export DOCKER_INFLUXDB_INIT_PASSWORD=123456@qwe
+export DOCKER_INFLUXDB_INIT_PASSWORD=huayun@123
 
 influx config create --config-name config01 \
 --host-url http://178.104.163.111:8086 \

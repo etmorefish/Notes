@@ -1,0 +1,14 @@
+version: "2.2"
+services:
+  sigle_vm:
+    image: victoriametrics/victoria-metrics:latest
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /root/vm:/victoria-metrics-data 
+    ports:
+      - 8428:8428
+    restart: always
+
+
+

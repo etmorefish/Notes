@@ -14,8 +14,9 @@ chmod +x /usr/local/bin/docker-compose
 install cadvisor
 ```bash
 docker run -d \
+    --restart always \
     --name cadvisor \
-    -p 8080:8080 \
+    -p 8070:8080 \
     -v /:/rootfs:ro \
     -v /var/run/:/var/run/:rw \
     -v /sys/:/sys/:ro \
