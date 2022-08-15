@@ -375,3 +375,31 @@ D-->>A: Dashed open arrow
 
 [^footnote2]: 这是另一个 *注脚* 的 **文本**。
 
+
+
+
+
+
+<details><summary>CLICK ME</summary>
+
+<p>
+
+#### We can hide anything, even code!
+
+```ruby
+   puts "Hello World"
+```
+
+</p>
+
+</details>
+
+Here is a simple flow chart:
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```

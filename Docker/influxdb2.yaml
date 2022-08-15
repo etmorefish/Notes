@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+  influx:
+    restart: always
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /var/lib/influxdb2:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_USERNAME=root    
+      - DOCKER_INFLUXDB_INIT_PASSWORD=huayun@123   
+      - DOCKER_INFLUXDB_INIT_ORG=huayun   
+      - DOCKER_INFLUXDB_INIT_BUCKET=prometheus  
+
+
+
+ 

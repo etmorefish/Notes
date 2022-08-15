@@ -74,3 +74,6 @@ http{
 docker run  -v $PWD/nginx.conf:/etc/nginx/nginx.conf -p 80:80 nginx:latest 
 
 ```
+  - job_name: "single_tsdb_cadvisor"
+    static_configs:
+      - targets: ["178.104.163.175:8070"]
