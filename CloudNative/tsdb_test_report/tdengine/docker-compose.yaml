@@ -1,0 +1,42 @@
+version: '3.1'
+services:
+  tdengine:
+    restart: always
+    image: tdengine/tdengine:2.6.0.10
+    container_name: tdengine
+    ports:
+      - 6030-6049:6030-6049
+      - 6030-6049:6030-6049/udp
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /var/log/taos:/var/log/taos
+      - /var/lib/taos:/var/lib/taos
+
+  vm:
+    restart: always
+    image: victoriametrics/victoria-metrics:latest
+    container_name: vm
+    ports:
+      - 8428:8428
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /var/lib/vm:/victoria-metrics-data
+
+  cadvisor:
+    restart: always
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /:/rootfs:ro 
+      - /var/run/:/var/run/:rw 
+      - /sys/:/sys/:ro 
+      - /var/lib/docker/:/var/lib/docker/:ro 
+      - /dev/disk/:/dev/disk/:ro 
+
+

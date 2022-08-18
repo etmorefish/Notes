@@ -1,0 +1,18 @@
+default: proxy
+# write your own rules below
+domain(domain:mail.qq.com)->direct
+
+domain(geosite:geolocation-!cn)->proxy
+domain(geosite:google-scholar)->proxy
+domain(geosite:category-scholar-!cn, geosite:category-scholar-cn)->direct
+domain(geosite:cn)->direct
+ip(geoip:hk,geoip:mo)->proxy
+ip(geoip:private, geoip:cn)->direct
+
+source(127.0.0.1) -> direct
+ip(178.104.163.85)->direct
+ip(178.104.163.0/24)->direct
+
+domain(domain:oa.huayun.com)->direct
+ip(10.21.71.254) -> direct
+ip(202.96.209.133,10.51.80.100) -> direct

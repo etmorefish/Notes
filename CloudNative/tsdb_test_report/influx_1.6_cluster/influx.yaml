@@ -1,0 +1,27 @@
+version: "2.4"
+services:
+  influxdb:
+    image: harbor.archeros.cn/library/influxdb:v1.6.0_cluster
+    privileged: false
+    pid: "host"
+    mem_limit: 4096m
+    cpus: 4
+    network_mode: "host"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://178.104.163.53:8086/ping"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+    volumes:
+      - /etc/hosts:/etc/hosts
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+      - /var/lib/influxdb:/var/lib/influxdb
+      - /etc/influxdb/:/etc/influxdb/
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 65535
+    restart: always
+    command:
+      influxd -config /etc/influxdb/influxdb.conf -join influx-1:8091,influx-2:8091,influx-3:8091 --hostname influx-3
