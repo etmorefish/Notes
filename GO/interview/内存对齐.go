@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"unsafe"
 )
@@ -21,7 +22,9 @@ func main() {
 	fmt.Println(unsafe.Sizeof(DemoA{}))
 	fmt.Println(unsafe.Sizeof(DemoB{}))
 
+	json.Unmarshal()
 }
+
 /*
 32位机器，对齐4字节
 64位机器，对齐8字节
