@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -28,26 +29,26 @@ func TestCsGzip(t *testing.T) {
 }
 
 func main() {
-	var name = "/home/lei/Downloads/1011log/JB05.txt.gz"
-	_, err := unGzip("/home/lei/Downloads/1011log/JB05.txt.gz")
+	var name = "/home/lei/Downloads/1011log/JB06.txt.gz"
+	content, err := unGzip("/home/lei/Downloads/1011log/JB06.txt.gz")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	// fmt.Println(string(content))
-	fileName := strings.Split(name, ".")
+	fileName := strings.Split(name, ".")[0]
 	fmt.Println(fileName)
-	// //写入文件
-	// if err = ioutil.WriteFile(fileName, content, 0666); err != nil {
-	// 	fmt.Println("写入错误：", err)
-	// }
+	//写入文件
+	if err = ioutil.WriteFile(fileName, content, 0666); err != nil {
+		fmt.Println("写入错误：", err)
+	}
 
-	// //读取文件
-	// fileContent, err := ioutil.ReadFile(fileName)
-	// if err != nil {
-	// 	fmt.Println("读取错误：", err)
-	// 	return
-	// }
+	//读取文件
+	_, err = ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("读取错误：", err)
+		return
+	}
 	// fmt.Println("读取成功，文件内容：", string(fileContent))
 
 }
