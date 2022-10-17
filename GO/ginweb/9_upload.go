@@ -46,7 +46,7 @@ func main() {
 
 /*
 curl -X POST http://localhost:8080/upload \
-  -F "file=@/Users/leimao/Documents/Notes/GO/ginweb/main.go" \
+  -F "file=@/Users/leimao/Documents/Notes/GO/ginweb/server.go" \
   -H "Content-Type: multipart/form-data"
 
 
