@@ -93,3 +93,16 @@ docker exec -it mongo mongo admin
 ```
 
 在执行docker run的时候如果添加--rm参数，则容器终止后会立刻删除。--rm参数和-d参数不能同时使用。
+
+## Manage Docker as a non-root user
+```bash
+1.Create the docker group.
+ 
+ sudo groupadd docker
+ 
+2.Add your user to the docker group.
+ 
+ sudo usermod -aG docker $USER
+
+ newgrp docker
+```
